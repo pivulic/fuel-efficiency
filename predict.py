@@ -20,9 +20,18 @@ class AutoSet:
     def drop_missing_rows(self):
         self.dataset = self.dataset.dropna()
 
+    def convert_origin_to_numeric_columns(self):
+        origin = self.dataset.pop('Origin')
+        self.dataset['USA'] = (origin == 1) * 1.0
+        self.dataset['Europe'] = (origin == 2) * 1.0
+        self.dataset['Japan'] = (origin == 3) * 1.0
+
 # Tail the data
 auto_set = AutoSet()
-print(auto_set.dataset.tail())
 
 # Clean the data, since column Horsepower contains 6 errors (?)
 auto_set.drop_missing_rows()
+
+# Convert Origin column to numeric columns for each country
+auto_set.convert_origin_to_numeric_columns()
+print(auto_set.dataset.tail())

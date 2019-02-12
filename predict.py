@@ -17,5 +17,12 @@ class AutoSet:
         self.columns = ['MPG', 'Cylinders', 'Displacement', 'Horsepower', 'Weight', 'Acceleration', 'Model Year', 'Origin']
         self.dataset = pandas.read_csv(self.url, names=self.columns,  na_values="?", comment='\t', sep=" ", skipinitialspace=True)
 
+    def drop_missing_rows(self):
+        self.dataset = self.dataset.dropna()
+
+# Tail the data
 auto_set = AutoSet()
 print(auto_set.dataset.tail())
+
+# Clean the data, since column Horsepower contains 6 errors (?)
+auto_set.drop_missing_rows()

@@ -14,6 +14,7 @@ from tensorflow.keras import layers
 class AutoSet:
     train_dataset = None
     test_dataset = None
+    label = 'MPG'
 
     def __init__(self):
         self.url = "https://archive.ics.uci.edu/ml/machine-learning-databases/auto-mpg/auto-mpg.data"
@@ -33,6 +34,10 @@ class AutoSet:
         self.train_dataset = self.dataset.sample(frac=0.8, random_state=0)
         self.test_dataset = self.dataset.drop(self.train_dataset.index)
 
+    def separate_label(self):
+        self.train_dataset.pop(self.label)
+        self.test_dataset.pop(self.label)
+
 # Tail the data
 auto_set = AutoSet()
 
@@ -44,3 +49,6 @@ auto_set.convert_origin_to_numeric_columns()
 
 # Split the data into train and test
 auto_set.split_data()
+
+# Split features from labels
+auto_set.separate_label()

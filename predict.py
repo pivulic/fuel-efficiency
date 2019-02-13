@@ -4,6 +4,7 @@ import matplotlib
 matplotlib.use('TkAgg')
 import pathlib
 
+import tensorflow
 import pandas
 import seaborn as sns
 
@@ -50,6 +51,19 @@ class AutoSet:
         self.normed_train_dataset = (self.train_dataset - train_statistics['mean']) / train_statistics['std']
         self.normed_test_dataset = (self.test_dataset - train_statistics['mean']) / train_statistics['std']
 
+    def build_model(self):
+        model = keras.Sequential([
+            layers.Dense(64, activation=tensorflow.nn.relu, input_shape=[len(self.train_dataset.keys())]),
+            layers.Dense(64, activation=tensorflow.nn.relu),
+            layers.Dense(1)
+        ])
+
+        optimizer = tensorflow.keras.optimizers.RMSprop(0.001)
+
+        model.compile(loss='mse', optimizer=optimizer, metrics=['mae', 'mse'])
+        return model
+
+
 # Tail the data
 auto_set = AutoSet()
 
@@ -67,5 +81,6 @@ auto_set.separate_label()
 
 # Normalize the data
 auto_set.normalize()
-print(auto_set.normed_train_dataset.tail())
-print(auto_set.normed_test_dataset.tail())
+
+# Build the model
+model = auto_set.build_model()

@@ -12,6 +12,9 @@ from tensorflow.keras import layers
 
 
 class AutoSet:
+    train_dataset = None
+    test_dataset = None
+
     def __init__(self):
         self.url = "https://archive.ics.uci.edu/ml/machine-learning-databases/auto-mpg/auto-mpg.data"
         self.columns = ['MPG', 'Cylinders', 'Displacement', 'Horsepower', 'Weight', 'Acceleration', 'Model Year', 'Origin']
@@ -26,6 +29,10 @@ class AutoSet:
         self.dataset['Europe'] = (origin == 2) * 1.0
         self.dataset['Japan'] = (origin == 3) * 1.0
 
+    def split_data(self):
+        self.train_dataset = self.dataset.sample(frac=0.8, random_state=0)
+        self.test_dataset = self.dataset.drop(self.train_dataset.index)
+
 # Tail the data
 auto_set = AutoSet()
 
@@ -34,4 +41,6 @@ auto_set.drop_missing_rows()
 
 # Convert Origin column to numeric columns for each country
 auto_set.convert_origin_to_numeric_columns()
-print(auto_set.dataset.tail())
+
+# Split the data into train and test
+auto_set.split_data()

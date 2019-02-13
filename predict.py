@@ -78,8 +78,8 @@ class AutoSet:
 
     def train_model(self):
         return model.fit(
-            auto_set.normed_train_dataset, auto_set.train_labels,
-            epochs=auto_set.EPOCHS, validation_split=0.2, verbose=0,
+            self.normed_train_dataset, self.train_labels,
+            epochs=self.EPOCHS, validation_split=0.2, verbose=0,
             callbacks=[PrintDot()]
         )
 

@@ -4,6 +4,9 @@ import matplotlib
 matplotlib.use('TkAgg')
 import pathlib
 
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+
 import tensorflow
 import pandas
 import seaborn as sns
@@ -12,13 +15,23 @@ from tensorflow import keras
 from tensorflow.keras import layers
 
 
+class PrintDot(keras.callbacks.Callback):
+    def on_epoch_end(self, epoch, logs):
+        if epoch % 100 == 0:
+            print('')
+        print('.', end='')
+
+
 class AutoSet:
     train_dataset = None
     test_dataset = None
+    train_labels = None
+    test_labels = None
     normed_train_dataset = None
     normed_test_dataset = None
 
-    label = 'MPG'
+    LABEL = 'MPG'
+    EPOCHS = 1000
 
     def __init__(self):
         self.url = "https://archive.ics.uci.edu/ml/machine-learning-databases/auto-mpg/auto-mpg.data"
@@ -39,8 +52,8 @@ class AutoSet:
         self.test_dataset = self.dataset.drop(self.train_dataset.index)
 
     def separate_label(self):
-        self.train_dataset.pop(self.label)
-        self.test_dataset.pop(self.label)
+        self.train_labels = self.train_dataset.pop(self.LABEL)
+        self.test_labels = self.test_dataset.pop(self.LABEL)
 
     def get_training_statistics(self):
         train_statistics = self.train_dataset.describe()
@@ -63,6 +76,13 @@ class AutoSet:
         model.compile(loss='mse', optimizer=optimizer, metrics=['mae', 'mse'])
         return model
 
+    def train_model(self):
+        return model.fit(
+            auto_set.normed_train_dataset, auto_set.train_labels,
+            epochs=auto_set.EPOCHS, validation_split=0.2, verbose=0,
+            callbacks=[PrintDot()]
+        )
+
 
 # Tail the data
 auto_set = AutoSet()
@@ -84,3 +104,6 @@ auto_set.normalize()
 
 # Build the model
 model = auto_set.build_model()
+
+# Train the model
+history = auto_set.train_model()

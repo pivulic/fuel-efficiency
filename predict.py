@@ -3,6 +3,7 @@ from __future__ import absolute_import, division, print_function
 import matplotlib
 matplotlib.use('TkAgg')
 import pathlib
+from matplotlib import pyplot
 
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
@@ -84,6 +85,27 @@ class AutoSet:
             callbacks=[early_stop, PrintDot()]
         )
 
+    def plot_history(self, history):
+        hist = pandas.DataFrame(history.history)
+        hist['epoch'] = history.epoch
+
+        pyplot.figure()
+        pyplot.xlabel('Epoch')
+        pyplot.ylabel('Mean Abs Error [MPG]')
+        pyplot.plot(hist['epoch'], hist['mean_absolute_error'], label='Train Error')
+        pyplot.plot(hist['epoch'], hist['val_mean_absolute_error'], label='Val Error')
+        pyplot.legend()
+        pyplot.ylim([0, 5])
+
+        pyplot.figure()
+        pyplot.xlabel('Epoch')
+        pyplot.ylabel('Mean Square Error [$MPG^2$]')
+        pyplot.plot(hist['epoch'], hist['mean_squared_error'], label='Train Error')
+        pyplot.plot(hist['epoch'], hist['val_mean_squared_error'], label='Val Error')
+        pyplot.legend()
+        pyplot.ylim([0, 20])
+        pyplot.show()
+
 
 # Tail the data
 auto_set = AutoSet()
@@ -108,3 +130,4 @@ model = auto_set.build_model()
 
 # Train the model
 history = auto_set.train_model()
+auto_set.plot_history(history)

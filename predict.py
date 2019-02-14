@@ -106,6 +106,14 @@ class AutoSet:
         pyplot.ylim([0, 20])
         pyplot.show()
 
+    def plot_error_distribution(self, model):
+        test_predictions = model.predict(self.normed_test_dataset).flatten()
+        error = test_predictions - self.test_labels
+        pyplot.hist(error, bins=25)
+        pyplot.xlabel("Prediction Error [MPG]")
+        pyplot.ylabel("Count")
+        pyplot.show()
+
 
 # Tail the data
 auto_set = AutoSet()
@@ -131,3 +139,10 @@ model = auto_set.build_model()
 # Train the model
 history = auto_set.train_model()
 auto_set.plot_history(history)
+
+# Measure model accuracy
+loss, mean_abs_error, mean_squared_error = model.evaluate(auto_set.normed_test_dataset, auto_set.test_labels, verbose=0)
+print("Testing accuracy (Mean Abs Error): {:5.2f} MPG".format(mean_abs_error))
+
+# Plot prediction error distribution
+auto_set.plot_error_distribution(model)

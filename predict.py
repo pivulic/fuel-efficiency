@@ -77,10 +77,11 @@ class AutoSet:
         return model
 
     def train_model(self):
+        early_stop = keras.callbacks.EarlyStopping(monitor='val_loss', patience=10)
         return model.fit(
             self.normed_train_dataset, self.train_labels,
             epochs=self.EPOCHS, validation_split=0.2, verbose=0,
-            callbacks=[PrintDot()]
+            callbacks=[early_stop, PrintDot()]
         )
 
 

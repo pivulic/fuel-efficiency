@@ -2,7 +2,6 @@ from __future__ import absolute_import, division, print_function
 
 import matplotlib
 matplotlib.use('TkAgg')
-import pathlib
 from matplotlib import pyplot
 
 import os
@@ -10,7 +9,6 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
 import tensorflow
 import pandas
-import seaborn as sns
 
 from tensorflow import keras
 from tensorflow.keras import layers
